@@ -1,19 +1,38 @@
 """
 For a game with 8 tiles of blocks on a 3x3 grid,
-write down the Facts and Rules to model the game state 
+write down the Facts and Rules to model the game state
 shown as the follows:
 
  y\\x   pos1     pos2     pos3
-     ┌────────┬────────┬────────┐
-pos1 │ tile5  │ tile4  │ empty  │
-     ├────────┼────────┼────────┤
-pos2 │ tile6  │ tile1  │ tile8  │
-     ├────────┼────────┼────────┤
-pos3 │ tile7  │ tile3  │ tile2  │
-     └────────┴────────┴────────┘
 
-Example: 
+pos1  tile5   tile4   empty
+
+pos2  tile6   tile1   tile8
+o
+pos3  tile7   tile3   tile2
+
+
+Example:
 fact: (pred obj1 obj2)
 rule: ((pred obj1 obj2) (pred obj2 obj3)) -> (pred obj1 obj3)
 
 """
+
+rule: ((position ?t1 ?x ?y1) (position ?t2 ?x ?y2) (position ?t1 ?x pos2)) -> (adj ?t1 ?t2)
+rule: ((position ?t1 ?x ?y1) (position ?t2 ?x ?y2) (position ?t2 ?x pos2)) -> (adj ?t1 ?t2)
+rule: ((position ?t1 ?x1 ?y) (position ?t2 ?x2 ?y) (position ?t1 pos2 ?y)) -> (adj ?t1 ?t2)
+rule: ((position ?t1 ?x1 ?y) (position ?t2 ?x2 ?y) (position ?t2 pos2 ?y)) -> (adj ?t1 ?t2)
+
+rule: (adj ?t1 ?t2) -> (adj ?t2 ?t1)
+
+rule: ((position ?piece ?initialx ?initialy) (position empty ?targetx ?targety) (adj ?piece empty)) -> (movable ?piece ?initialx ?initialy ?targetx ?targety)
+
+fact: (position tile1 pos2 pos2)
+fact: (position tile2 pos3 pos3)
+fact: (position tile3 pos2 pos3)
+fact: (position tile4 pos2 pos1)
+fact: (position tile5 pos1 pos1)
+fact: (position tile6 pos1 pos2)
+fact: (position tile7 pos1 pos3)
+fact: (position tile8 pos3 pos2)
+fact: (position empty pos3 pos1)
